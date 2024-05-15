@@ -9,10 +9,12 @@ class Player:
         self.direction = direction
 
     def move_left(self, game):
-        game.map_now += 1
+        if game.map_now <= 0:
+            game.map_now += 1
 
     def move_right(self, game):
-        game.map_now -= 1
+        if game.map_now >= - (len(game.map_data[0]) * game.box_size) + game.width:
+            game.map_now -= 1
 
     def jump(self):
         # Jump logic
@@ -33,17 +35,13 @@ class Map:
     def make(self, game):
         height = len(game.map_data)
         width = len(game.map_data[0])
-        block_y = 0
-        block_x = 0
-        while block_y < height:
-            while block_x < width:
+
+        for block_y in range(height):
+            for block_x in range(width):
                 if game.map_data[block_y][block_x] == 1:
-                    pygame.draw.rect(game.screen, (0, 0, 255), Rect(game.map_now + (game.box_size * block_x), (game.box_size * block_y), game.box_size, game.box_size))
+                    pygame.draw.rect(game.screen, (0, 0, 255), Rect((game.map_now + game.box_size * block_x), (game.box_size * block_y), game.box_size, game.box_size))
                 elif game.map_data[block_y][block_x] == 2:
-                    pygame.draw.rect(game.screen, (255, 0, 0), Rect(game.map_now + (game.box_size * block_x), (game.box_size * block_y), game.box_size, game.box_size))
-                block_x += 1
-            block_y += 1
-            block_x = 0
+                    pygame.draw.rect(game.screen, (255, 0, 0), Rect((game.map_now + game.box_size * block_x), (game.box_size * block_y), game.box_size, game.box_size))
 
     def check_collision(self, x_now, y_now, next_x, next_y, size):
         # Collision detection logic
